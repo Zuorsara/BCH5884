@@ -89,8 +89,8 @@ ZNC=0
 
 f=open("output.pdb",'w')
 for serial in records:
-    output="{0:6}{1:6}{2:5}{3:4}{4:1}{5:4}{6:12.3f}{7:8.3f}{8:8.3f}{9:6.2f}  {10:6.3f}{11:>12}\n"
-    f.write(output.format(serial[0],serial[1],serial[2],serial[3],serial[4],serial[5],serial[6]-CMCX,serial[7]-CMCY,serial[8]-CMCZ,serial[9],serial[10],serial[11]))
+    output="{0:5}{1:6}{2:5}{3:5}{4:1}{5:3}{6:12.3f}{7:8.3f}{8:8.3f}{9:8.2f}{10:6.3f}{11:>12} {12:6.2f}\n"
+    f.write(output.format(serial[0],serial[1],serial[2],serial[3],serial[4],serial[5],serial[6]-CMCX,serial[7]-CMCY,serial[8]-CMCZ,serial[9],serial[10],serial[11],serial[12]))
 f.close()
 
 print("Done")
