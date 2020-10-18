@@ -4,7 +4,7 @@
 
 import sys
 import math
-import numpy
+import numpy as np
 
 #Line Formatting
 #Colum - Typ - Description
