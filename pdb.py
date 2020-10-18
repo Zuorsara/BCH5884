@@ -4,6 +4,7 @@
 
 import sys
 import math
+import numpy
 
 #Line Formatting
 #Colum - Typ - Description
@@ -83,9 +84,9 @@ CMCZ=ZCM/MassTotal
 #print ("There are my center of mass coordinates", (CMCX),(CMCY),(CMCZ))
 
 #Center of Mass
-XNC=0
-YNC=0
-ZNC=0
+#XNC=0
+#YNC=0
+#ZNC=0
 
 f=open("output.pdb",'w')
 for serial in records:
@@ -93,4 +94,4 @@ for serial in records:
     f.write(output.format(serial[0],serial[1],serial[2],serial[3],serial[4],serial[5],serial[6]-CMCX,serial[7]-CMCY,serial[8]-CMCZ,serial[9],serial[10],serial[11],serial[12]))
 f.close()
 
-print("Done")
+print("The Deed is Done")
