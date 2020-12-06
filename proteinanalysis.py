@@ -3,135 +3,175 @@
 
 import math
 import sys
+import numpy as np
+import matplotlib.pyplot as plt
 
-#Module 1: Function that will read in the pdb, parse the information, and separate the information into arrays
-	
+#Module 1: Function reading in the pdb file, parsing the lines, separating the data 
 def readpdb(pdbfilename):
 	pdbfile=open(pdbfilename,'r')
 	lines=pdbfile.readlines()
 	pdbfile.close()
-	atom=[]
-        number=[]
-        segment=[]
-        residue=[]
-        xcoordinate=[]
-        ycoordinate=[]
-        zcoordinate=[]
-        tempfactor=[]
-        element=[]
+	records=[]
+	totalmass=0
 	for line in lines:
-            if lines[0:6]=="ATOM":
-		words=line.split()
-                atom.append(float(words[0]))
-                number.append(float(words[1]))
-                segment.append(float(words[2]))
-                residue.append(float(words[3]))
-                xcoordinate.append(float(words[4]))
-                ycoordinate.append(float(words[5]))
-                zcoordinate.append(float(words[6]))
-                tempfactor.append(float(words[7]))
-                element.append(float(words[8]))
-            else:
-                continue
-        return (atom,number,segment,residue,xcoordinate,ycoordinate,zcoordinate,tempfactor,element)
+		if line[:4]=="ATOM"
+			data=[]
+			data['atom']=line[0:6]
+			data['number']=int(line[6:11])
+			data['atomtype']=line[12:16]
+			data['residue']=line[17:20]
+			data['residuenumber']=line[24:28]
+			data['x']=float(line[30:38])
+			data['y']=float(line[38:46])
+			data['z']=float(line[46:54])
+			data['occupancy']=float(line[54:60])
+			data['tempfact']=float(line[60:66])
+			data['element']=line[76:78].strip()
+			data['mass']=findmass(data['element'])
+			records.append(data)
+	
+	return records
 
-			
+#Module 2: uses a dictionary of element:mass to find the mass of each element
+def findmass(element):
+	massdict={"H":1.01, "C":12.01,"N":14.01,"O":16.0,"P":30.97,"S":32.07,"MG":24.30}
+	mass=massdict.get(element)
+	
+	return mass
 
-def writepdbline(outfile, d):
-	"Write a line to outfile in pdb format. d must be a dictionary containing records for an atom"
-	outfile.write("%-6s%5d %-4s%1s%-3s %1s%4d%1s   %8.3f%8.3f%8.3f%6.2f%6.2f          %1s%-2s\n" % (d['rtype'],d['atomnumber'],d['atomtype'],d['altloc'],d['residue'],d['chain'],d['residuenumber'],d['icode'],d['x'],d['y'],d['z'],d['occupancy'],d['tempfact'],d['element'],d['charge']))
+#Module 3: calculates the total mass of the wildtype and mutant pdb files
+def findtotalmass():
+	totalmass=0
+	for record in records:
+		totalmass+=record[11]
+		
+	return totalmass
+	
 
-#def findcenter(atomlist):
-#	"""Returns the center of a structure. Must specify "geom" for geometric center or "com" for center of mass."""
-#	cenx=0
-#	ceny=0
-#	cenz=0
-#	natoms=len(atomlist)
-#	for atom in atomlist:
-#		cenx+=atom['x']
-#		ceny+=atom['y']
-#		cenz+=atom['z']
-#	cenx=cenx/natoms
-#	ceny=ceny/natoms
-#	cenz=cenz/natoms
-#	return {'x':cenx,'y':ceny,'z':cenz}
-
-def rmsd(atomdict1, atomdict2):
-	"""Calculate rmsd between two structures. Structures must have residues in the same order"""
-	natoms=len(atomdict1)
-	if natoms==len(atomdict2):
-		sumsq=0
-		for n in range(0,natoms):
-			dx=atomdict1[n]['x']-atomdict2[n]['x']
-			dy=atomdict1[n]['y']-atomdict2[n]['y']
-			dz=atomdict1[n]['z']-atomdict2[n]['z']
+#Module 4: takes two sets of the previously parsed data for calculating of rmsd, if natoms isn't equal absolute value of the difference is used for the calculate at decreased accuracy
+def rmsd(wildtype, mutant):
+	nwild=len(wildtype)
+	nmut=len(mutant)
+	sumsq=0
+	if nwild==nmut:
+		for n in range(0,nwild):
+			dx=wildtype[n]['x']-mutant[n]['x']
+			dy=wildtype[n]['y']-mutant[n]['y']
+			dz=wildtype[n]['z']-mutant[n]['z']
+			sumsq+=dx*dx+dy*dy+dz*dz
+		sumsq=sumsq/natoms
+		rmsd=math.sqrt(sumsq)
+	elif nwild<nmut
+		ldiff=nmut-nwild
+		lrange=nmut-ldiff
+		for n in range(0,lrange):
+			dx=wildtype[n]['x']-mutant[n]['x']
+			dy=wildtype[n]['y']-mutant[n]['y']
+			dz=wildtype[n]['z']-mutant[n]['z']
+			sumsq+=dx*dx+dy*dy+dz*dz
+		sumsq=sumsq/natoms
+		rmsd=math.sqrt(sumsq)
+	elif nwild>nmut
+		gdiff=nwild-nmut
+		grange=nwild-grange
+		for n in range(0,grange):
+			dx=wildtype[n]['x']-mutant[n]['x']
+			dy=wildtype[n]['y']-mutant[n]['y']
+			dz=wildtype[n]['z']-mutant[n]['z']
 			sumsq+=dx*dx+dy*dy+dz*dz
 		sumsq=sumsq/natoms
 		rmsd=math.sqrt(sumsq)
 	else:
 		print ("Warning, uneven numbers of atoms. RMSD cannot be calculated")
 		rmsd=None
+		
 	return rmsd
 
-def getmass(element):
-	"""Determine mass for element type"""
-	massdict={"H":1.01, "C":12.01,"N":14.01,"O":16.0,"P":30.97,"S":32.07,"MG":24.30}
-	mass=massdict.get(element)
-	return mass
+#Module 5: Relative Abundance of the elements
 
-def findcenter(atomlist, centype="geom"):
-	"""Returns the center of a structure. Must specify "geom" for geometric center or "com" for center of mass."""
-	cenx=0
-	ceny=0
-	cenz=0
-	natoms=len(atomlist)
-	if centype=="geom":
-		for atom in atomlist:
-			cenx+=atom['x']
-			ceny+=atom['y']
-			cenz+=atom['z']
-		cenx=cenx/natoms
-		ceny=ceny/natoms
-		cenz=cenz/natoms
-	elif centype=="com":
-		totmass=0
-		for atom in atomlist:
-			cenx+=atom['x']*atom['mass']
-			ceny+=atom['y']*atom['mass']
-			cenz+=atom['z']*atom['mass']
-			totmass+=atom['mass']
-		cenx=cenx/totmass
-		ceny=ceny/totmass
-		cenz=cenz/totmass
-	else:
-		print ("Center type", centype, "not defined")
-		sys.exit()
-	return {'x':cenx,'y':ceny,'z':cenz}
+def wildtypeelementalabundance():
+	for record in records:
+		sequencenum=np.array(record[1])
+		aelements=np.array(record[11])
+		
+	return sequencenum, aelements
 
-def centercoords(atomlist,centerdict, check=False):
-	"""Centers atoms by subtracting centerdict. Modifies atomlist"""
-	for atom in atomlist:
-		atom['x']=atom['x']-centerdict['x']
-		atom['y']=atom['y']-centerdict['y']
-		atom['z']=atom['z']-centerdict['z']
-	if check:
-		com=findcenter(atomlist,"com")
-		geom=findcenter(atomlist,"geom")
-		print ("New center of mass is:", com['x'],com['y'],com['z'])
-		print ("New geometric center is:", geom['x'],geom['y'],geom['z'])
-	return
+	wnumnit=0
+	wnumcar=0
+	wnumoxy=0
+	for elements in aelements:
+		if element=="N":
+			wnumnit+=1
+		elif element=="C":
+			wnumcar+=1
+		elif element=="O":
+			wnumoxy+=1
+		else:
+			continue
+			
+	return wnumnit,wnumcar,wnumoxy
 
+def mutantelementalabundance():
+	for record in records:
+		aelements=np.array(record[11])
+	return aelements
+	mnumnit=0
+	mnumcar=0
+	mnumoxy=0
+	for elements in aelements:
+		if element=="N":
+			mnumnit+=1
+		elif element=="C":
+			mnumcar+=1
+		elif element=="O":
+			mnumoxy+=1
+		else:
+			continue
+			
+	return mnumnit,mnumcar,mnumoxy
 
-if __name__=="__main__":
+#Module 6: Plotting the elemental abundance (I originally was going to use plotnine, but the tutorial wasn't very clear so I switched back to matplotlib)
+def elementalabundanceplot():
+	N = 2
+	nitrogencomparison = (wnumnit, mnumnit)
+	carboncomparison = (wnumcar, mnumcar)
+	oxygencomparison = (wnumoxy, mnumoxy)
+	ind = np.arange(N) # the x locations for the groups
+	width = 0.35
+	fig = plt.figure()
+	ax = fig.add_axes([0,0,1,1])
+	ax.bar(ind, nitrogencomparison, width, color='r')
+	ax.bar(ind, carboncomparison, width, color='g')
+	ax.bar(ind, oxygencomparison, width, color='b')
+	ax.set_ylabel('Abundance (in # of elements)')
+	ax.set_title('Elemental abundance between wildtype and mutant p53 proteins')
+	ax.set_xticks(ind, ('G1', 'G2',))
+	ax.set_yticks(np.arange(0, 1500, 100))
+	ax.legend(labels=['Nitrogen', 'Carbon', 'Oxygen'])
+	#plt.show()
 	
-	atomlist=readpdb("/home.local/bch5887-01/5tnc_move.pdb")
-	atomlist2=readpdb("/home.local/bch5887-01/5tnc_move2.pdb")
-	print (atomlist[0])
-	r=rmsd(atomlist,atomlist2)
-	print ("rmsd =", r)
-	geom=findcenter(atomlist, centype="com")
-	geom2=findcenter(atomlist2, centype="com")
-	print ("geom dict", geom, "geom dict2", geom2)
-	centercoords(atomlist,geom,check=True)
-	centercoords(atomlist2,geom2,check=True)
-	
+#Module 7: calculating the mean of the temperature factors
+def wildtypetempfactor():
+	wtempfact=[]
+	wtempmean=[]
+	for record in records:
+		wtempfact=np.array(record[9])
+		wtempmean=np.mean(wtempfact)
+	return wtempfact, wtempmean
+
+def mutanttempfactor():
+	mtempfact=[]
+	mtempmean=[]
+	for record in records:
+		mtempfact=np.array(record[9])
+		mtempmean=np.mean(wtempfact)
+	return mtempfact, mtempmean
+
+#Module 8: Graphing the temperature factors
+def tfgraph():
+	plt.plot(sequencenum, absorbance, color="blue")
+	plt.plot(sequencenum, 
+	plt.xlabel('Time (min)')
+	plt.ylabel('Absorbance (mAU)')
+	plt.savefig("Plot.png",format="png")
+	#plt.show()
