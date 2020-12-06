@@ -39,13 +39,16 @@ def findmass(element):
 	
 	return mass
 
-#Module 3: calculates the total mass of the wildtype and mutant pdb files
+#Module 3: calculates the total mass of the wildtype and mutant pdb files + other variables for later usage
 def findtotalmass():
 	totalmass=0
 	for record in records:
+		sequencenum=np.array(record[1])
+		aresidues=np.array(record[3])
+		aelements=np.array(record[9])
 		totalmass+=record[11]
 		
-	return totalmass
+	return sequencenum, aresidues, aelements, totalmass
 	
 
 #Module 4: takes two sets of the previously parsed data for calculating of rmsd, if natoms isn't equal absolute value of the difference is used for the calculate at decreased accuracy
@@ -82,7 +85,7 @@ def rmsd(wildtype, mutant):
 		sumsq=sumsq/natoms
 		rmsd=math.sqrt(sumsq)
 	else:
-		print ("Warning, uneven numbers of atoms. RMSD cannot be calculated")
+		print ("Uneven # of atoms listed, range error)
 		rmsd=None
 		
 	return rmsd
@@ -90,12 +93,6 @@ def rmsd(wildtype, mutant):
 #Module 5: Relative Abundance of the elements
 
 def wildtypeelementalabundance():
-	for record in records:
-		sequencenum=np.array(record[1])
-		aelements=np.array(record[11])
-		
-	return sequencenum, aelements
-
 	wnumnit=0
 	wnumcar=0
 	wnumoxy=0
@@ -112,9 +109,6 @@ def wildtypeelementalabundance():
 	return wnumnit,wnumcar,wnumoxy
 
 def mutantelementalabundance():
-	for record in records:
-		aelements=np.array(record[11])
-	return aelements
 	mnumnit=0
 	mnumcar=0
 	mnumoxy=0
@@ -148,10 +142,11 @@ def elementalabundanceplot():
 	ax.set_xticks(ind, ('G1', 'G2',))
 	ax.set_yticks(np.arange(0, 1500, 100))
 	ax.legend(labels=['Nitrogen', 'Carbon', 'Oxygen'])
+	plt.savefig("Plot1.png",format="png")
 	#plt.show()
 	
 #Module 7: calculating the mean of the temperature factors
-def wildtypetempfactor():
+def wildtypetempfactor(wildtype):
 	wtempfact=[]
 	wtempmean=[]
 	for record in records:
@@ -159,7 +154,7 @@ def wildtypetempfactor():
 		wtempmean=np.mean(wtempfact)
 	return wtempfact, wtempmean
 
-def mutanttempfactor():
+def mutanttempfactor(mutant):
 	mtempfact=[]
 	mtempmean=[]
 	for record in records:
@@ -169,9 +164,189 @@ def mutanttempfactor():
 
 #Module 8: Graphing the temperature factors
 def tfgraph():
-	plt.plot(sequencenum, absorbance, color="blue")
-	plt.plot(sequencenum, 
-	plt.xlabel('Time (min)')
-	plt.ylabel('Absorbance (mAU)')
-	plt.savefig("Plot.png",format="png")
+	plt.plot(sequencenum, wtempfact, color="blue")
+	plt.plot(sequencenum, mtempfact, color="red")
+	plt.xlabel('Atom Number')
+	plt.ylabel('Temperature Factor')
+	plt.savefig("Plot2.png",format="png")
 	#plt.show()
+	
+#Module 9: Relative abundance of residues
+def wildtyperesidueabundance(wildtype):
+	wnumala=0
+	wnumarg=0
+	wnumasn=0
+	wnumasp=0
+	wnumasx=0
+	wnumcys=0
+	wnumglu=0
+	wnumgln=0
+	wnumglx=0
+	wnumgly=0
+	wnumhis=0
+	wnumile=0
+	wnumleu=0
+	wnumlys=0
+	wnummet=0
+	wnumphe=0
+	wnumpro=0
+	wnumser=0
+	wnumthr=0
+	wnumtrp=0
+	wnumtyr=0
+	wnumval=0
+	for residues in aresidues:
+		if residue=="ALA":
+			wnumala+=1
+		elif residue=="ARG":
+			wnumarg+=1
+		elif residue=="ASN":
+			wnumasn+=1
+		elif residue=="ASP":
+			wnumasp+=1
+		elif residue=="ASX":
+			wnumasx+=1
+		elif residue=="CYS":
+			wnumcys+=1
+		elif residue=="GLU":
+			wnumglu+=1
+		elif residue=="GLN":
+			wnumgln+=1
+		elif residue=="GLX":
+			wnumglx+=1
+		elif residue=="GLY":
+			wnumgly+=1
+		elif residue=="HIS":
+			wnumhis+=1
+		elif residue=="ILE":
+			wnumile+=1
+		elif residue=="LEU":
+			wnumleu+=1
+		elif residue=="LYS":
+			wnumlys+=1
+		elif residue=="MET":
+			wnummet+=1
+		elif residue=="PHE":
+			wnumphe+=1
+		elif residue=="PRO":
+			wnumpro+=1
+		elif residue=="SER":
+			wnumser+=1
+		elif residue=="THR":
+			wnumthr+=1
+		elif residue=="TRP":
+			wnumtrp+=1
+		elif residue=="TYR":
+			wnumtyr+=1
+		elif residue=="VAL":
+			wnumval+=1
+		else:
+			continue
+			
+	return wnumala, wnumarg, wnumasn, wnumasp, wnumasx, wnumcys, wnumglu, wnumgln, wnumglx, wnumgly, wnumhis, wnumile, wnumleu, wnumlys, wnummet, wnumphe, wnumpro, wnumser, wnumthr, wnumtrp, wnumtyr, wnumval
+
+def mutantresidueabundance(mutant):
+	mnumala=0
+	mnumarg=0
+	mnumasn=0
+	mnumasp=0
+	mnumasx=0
+	mnumcys=0
+	mnumglu=0
+	mnumgln=0
+	mnumglx=0
+	mnumgly=0
+	mnumhis=0
+	mnumile=0
+	mnumleu=0
+	mnumlys=0
+	mnummet=0
+	mnumphe=0
+	mnumpro=0
+	mnumser=0
+	mnumthr=0
+	mnumtrp=0
+	mnumtyr=0
+	mnumval=0
+	for residues in aresidues:
+		if residue=="ALA":
+			mnumala+=1
+		elif residue=="ARG":
+			mnumarg+=1
+		elif residue=="ASN":
+			mnumasn+=1
+		elif residue=="ASP":
+			mnumasp+=1
+		elif residue=="ASX":
+			mnumasx+=1
+		elif residue=="CYS":
+			mnumcys+=1
+		elif residue=="GLU":
+			mnumglu+=1
+		elif residue=="GLN":
+			mnumgln+=1
+		elif residue=="GLX":
+			mnumglx+=1
+		elif residue=="GLY":
+			mnumgly+=1
+		elif residue=="HIS":
+			mnumhis+=1
+		elif residue=="ILE":
+			mnumile+=1
+		elif residue=="LEU":
+			mnumleu+=1
+		elif residue=="LYS":
+			mnumlys+=1
+		elif residue=="MET":
+			mnummet+=1
+		elif residue=="PHE":
+			mnumphe+=1
+		elif residue=="PRO":
+			mnumpro+=1
+		elif residue=="SER":
+			mnumser+=1
+		elif residue=="THR":
+			mnumthr+=1
+		elif residue=="TRP":
+			mnumtrp+=1
+		elif residue=="TYR":
+			mnumtyr+=1
+		elif residue=="VAL":
+			mnumval+=1
+		else:
+			continue
+			
+	return mnumala, mnumarg, mnumasn, mnumasp, mnumasx, mnumcys, mnumglu, mnumgln, mnumglx, mnumgly, mnumhis, mnumile, mnumleu, mnumlys, mnummet, mnumphe, mnumpro, mnumser, mnumthr, mnumtrp, mnumtyr, mnumval
+		       
+#Module 10: Plotting the residue abundance
+"""def elementalabundanceplot():
+	N = 2
+	nitrogencomparison = (wnumnit, mnumnit)
+	carboncomparison = (wnumcar, mnumcar)
+	oxygencomparison = (wnumoxy, mnumoxy)
+	ind = np.arange(N) # the x locations for the groups
+	width = 0.35
+	fig = plt.figure()
+	ax = fig.add_axes([0,0,1,1])
+	ax.bar(ind, nitrogencomparison, width, color='r')
+	ax.bar(ind, carboncomparison, width, color='g')
+	ax.bar(ind, oxygencomparison, width, color='b')
+	ax.bar(ind, nitrogencomparison, width, color='r')
+	ax.bar(ind, carboncomparison, width, color='g')
+	ax.bar(ind, oxygencomparison, width, color='b')
+	ax.bar(ind, nitrogencomparison, width, color='r')
+	ax.bar(ind, carboncomparison, width, color='g')
+	ax.bar(ind, oxygencomparison, width, color='b')
+	ax.bar(ind, nitrogencomparison, width, color='r')
+	ax.bar(ind, carboncomparison, width, color='g')
+	ax.bar(ind, oxygencomparison, width, color='b')
+	ax.bar(ind, nitrogencomparison, width, color='r')
+	ax.bar(ind, carboncomparison, width, color='g')
+	ax.bar(ind, oxygencomparison, width, color='b')
+	ax.set_ylabel('Abundance (in # of elements)')
+	ax.set_title('Residue abundance between wildtype and mutant p53 proteins')
+	ax.set_xticks(ind, ('G1', 'G2',))
+	ax.set_yticks(np.arange(0, 1500, 100))
+	ax.legend(labels=['Nitrogen', 'Carbon', 'Oxygen'])
+	plt.savefig("Plot1.png",format="png")
+	#plt.show()"""    
