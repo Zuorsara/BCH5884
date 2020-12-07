@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 #https://github.com/Zuorsara/BCH5884.git
 
+#I absolutely bit off more than i could chew, and was unable to get the code to function correctly
+
 import math
 import sys
 import numpy as np
