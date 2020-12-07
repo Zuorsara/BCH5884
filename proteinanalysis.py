@@ -370,7 +370,7 @@ def elementalabundanceplot():
 	ax.set_xticks(ind, ('G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G7', 'G8', 'G9', 'G10', 'G11', 'G12', 'G13', 'G14', 'G15', 'G16', 'G17', 'G18', 'G19', 'G20', 'G21', 'G22'))
 	ax.set_yticks(np.arange(0, 1500, 100))
 	ax.legend(labels=['alanine', 'arginine', 'asparagine', 'aspartic acid', 'cysteine', 'glutamic acid', 'glutamine', 'glycine', 'histidine', 'isoleucine', 'leucine', 'lysine', 'methionine', 'phenylalanine', 'proline', 'serine', 'threonine', 'tryptophan', 'tyrosine', 'valine'])
-	plt.savefig("Plot1.png",format="png")
+	plt.savefig("Plot3.png",format="png")
 	#plt.show()
 
 #Module 11: Opening HTML		       
@@ -384,16 +384,25 @@ def openHTML(f,title):
 	f.write("<body>\n")
 
 #Module 12: Writing Images		       
-def writeHTMLImage(f,title, imgpath):
-	f.write('<p class="aucimage">%s</p>\n' % title)
-	f.write('<img src="%s" />\n' % imgpath)
-
+def writeHTMLImage(f, title, imgname):
+	f.write('<p class="proteininages">%s</p>\n' % title)
+	f.write('<img src="%s" />\n' % imgname)
+		       
+#Module 13: Closing HTML
 def closeHTML(f):
 	f.write("</body>\n")
 	f.write("</html>\n")
 	f.close()
-		       
-		       
+
+f=open("output.html",'w')		       
+openHTML(f, "Summary of p53 Protein Wildtype/Mutant Differences")
+f.write("<h1>The average temperature factor of the wildtype p53 is "%s"</h1>" % (wtempmean))
+f.write("<h1>The average temperature factor of the mutant p53 is "%s"</h1>" % (mtempmean))
+f.write("<h1>The RMSD between the wildtype and the mutant is "%s"</h1>" % (rmsd))
+writeHTMLImage(f, "Elemental Abundance", "Plot1.png)
+writeHTMLImage(f, "Temperature Factors", "Plot2.png)
+writeHTMLImage(f, "Residue Abundance", "Plot3.png)	      
+closeHTML(f)
 		       
 		       
 		       
