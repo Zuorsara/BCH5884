@@ -319,34 +319,83 @@ def mutantresidueabundance(mutant):
 	return mnumala, mnumarg, mnumasn, mnumasp, mnumasx, mnumcys, mnumglu, mnumgln, mnumglx, mnumgly, mnumhis, mnumile, mnumleu, mnumlys, mnummet, mnumphe, mnumpro, mnumser, mnumthr, mnumtrp, mnumtyr, mnumval
 		       
 #Module 10: Plotting the residue abundance
-"""def elementalabundanceplot():
-	N = 2
-	nitrogencomparison = (wnumnit, mnumnit)
-	carboncomparison = (wnumcar, mnumcar)
-	oxygencomparison = (wnumoxy, mnumoxy)
+def elementalabundanceplot():
+	N = 20
+	r1 = (wnumala, mnumala)
+	r2 = (wnumarg, mnumarg)
+	r3 = (wnumasn, mnumasn)
+	r4 = (wnumasp, mnumasp)
+	r5 = (wnumcys, mnumcys)
+	r6 = (wnumglu, mnumglu)
+	r7 = (wnumgln, mnumgln)
+	r8 = (wnumgly, mnumgly)
+	r9 = (wnumhis, mnumhis)
+	r10 = (wnumile, mnumile)
+	r11 = (wnumleu, mnumleu)
+	r12 = (wnumlys, mnumlys)
+	r13 = (wnummet, mnummet)
+	r14 = (wnumphe, mnumphe)
+	r15 = (wnumpro, mnumpro)
+	r16 = (wnumser, mnumser)
+	r17 = (wnumthr, mnumthr)
+	r18 = (wnumtrp, mnumtrp)
+	r19 = (wnumtyr, mnumtyr)
+	r20 = (wnumval, mnumval)
 	ind = np.arange(N) # the x locations for the groups
-	width = 0.35
+	width = 0.075
 	fig = plt.figure()
 	ax = fig.add_axes([0,0,1,1])
-	ax.bar(ind, nitrogencomparison, width, color='r')
-	ax.bar(ind, carboncomparison, width, color='g')
-	ax.bar(ind, oxygencomparison, width, color='b')
-	ax.bar(ind, nitrogencomparison, width, color='r')
-	ax.bar(ind, carboncomparison, width, color='g')
-	ax.bar(ind, oxygencomparison, width, color='b')
-	ax.bar(ind, nitrogencomparison, width, color='r')
-	ax.bar(ind, carboncomparison, width, color='g')
-	ax.bar(ind, oxygencomparison, width, color='b')
-	ax.bar(ind, nitrogencomparison, width, color='r')
-	ax.bar(ind, carboncomparison, width, color='g')
-	ax.bar(ind, oxygencomparison, width, color='b')
-	ax.bar(ind, nitrogencomparison, width, color='r')
-	ax.bar(ind, carboncomparison, width, color='g')
-	ax.bar(ind, oxygencomparison, width, color='b')
+	ax.bar(ind, r1, width, color='r')
+	ax.bar(ind, r2, width, color='g')
+	ax.bar(ind, r3, width, color='b')
+	ax.bar(ind, r4, width, color='r')
+	ax.bar(ind, r5, width, color='g')
+	ax.bar(ind, r6, width, color='b')
+	ax.bar(ind, r7, width, color='r')
+	ax.bar(ind, r8, width, color='g')
+	ax.bar(ind, r9, width, color='b')
+	ax.bar(ind, r10, width, color='r')
+	ax.bar(ind, r11, width, color='g')
+	ax.bar(ind, r12, width, color='b')
+	ax.bar(ind, r13, width, color='r')
+	ax.bar(ind, r14, width, color='g')
+	ax.bar(ind, r15, width, color='b')
+	ax.bar(ind, r16, width, color='r')
+	ax.bar(ind, r17, width, color='g')
+	ax.bar(ind, r18, width, color='b')
+	ax.bar(ind, r19, width, color='r')
+	ax.bar(ind, r20, width, color='g')
 	ax.set_ylabel('Abundance (in # of elements)')
 	ax.set_title('Residue abundance between wildtype and mutant p53 proteins')
-	ax.set_xticks(ind, ('G1', 'G2',))
+	ax.set_xticks(ind, ('G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G7', 'G8', 'G9', 'G10', 'G11', 'G12', 'G13', 'G14', 'G15', 'G16', 'G17', 'G18', 'G19', 'G20', 'G21', 'G22'))
 	ax.set_yticks(np.arange(0, 1500, 100))
-	ax.legend(labels=['Nitrogen', 'Carbon', 'Oxygen'])
+	ax.legend(labels=['alanine', 'arginine', 'asparagine', 'aspartic acid', 'cysteine', 'glutamic acid', 'glutamine', 'glycine', 'histidine', 'isoleucine', 'leucine', 'lysine', 'methionine', 'phenylalanine', 'proline', 'serine', 'threonine', 'tryptophan', 'tyrosine', 'valine'])
 	plt.savefig("Plot1.png",format="png")
-	#plt.show()"""    
+	#plt.show()
+
+#Module 11: Opening HTML		       
+def openHTML(f,title):
+	f.write("""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+""")
+	f.write("<head>\n")
+	f.write("<title>%s</title>\n" % title)
+	f.write("</head>\n")
+	f.write("<body>\n")
+
+#Module 12: Writing Images		       
+def writeHTMLImage(f,title, imgpath):
+	f.write('<p class="aucimage">%s</p>\n' % title)
+	f.write('<img src="%s" />\n' % imgpath)
+
+def closeHTML(f):
+	f.write("</body>\n")
+	f.write("</html>\n")
+	f.close()
+		       
+		       
+		       
+		       
+		       
+		       
+		       
