@@ -14,7 +14,7 @@ def readpdb(pdbfilename):
 	records=[]
 	totalmass=0
 	for line in lines:
-		if line[:4]=="ATOM"
+		if line[:4]=="ATOM":
 			data=[]
 			data['atom']=line[0:6]
 			data['number']=int(line[6:11])
@@ -41,6 +41,9 @@ def findmass(element):
 
 #Module 3: calculates the total mass of the wildtype and mutant pdb files + other variables for later usage
 def findtotalmass():
+	sequencenum=[]
+	aresidues=[]
+	aelements=[]
 	totalmass=0
 	for record in records:
 		sequencenum=np.array(record[1])
@@ -91,7 +94,6 @@ def rmsd(wildtype, mutant):
 	return rmsd
 
 #Module 5: Relative Abundance of the elements
-
 def wildtypeelementalabundance():
 	wnumnit=0
 	wnumcar=0
@@ -399,10 +401,11 @@ openHTML(f, "Summary of p53 Protein Wildtype/Mutant Differences")
 f.write("<h1>The average temperature factor of the wildtype p53 is "%s"</h1>" % (wtempmean))
 f.write("<h1>The average temperature factor of the mutant p53 is "%s"</h1>" % (mtempmean))
 f.write("<h1>The RMSD between the wildtype and the mutant is "%s"</h1>" % (rmsd))
-writeHTMLImage(f, "Elemental Abundance", "Plot1.png)
-writeHTMLImage(f, "Temperature Factors", "Plot2.png)
-writeHTMLImage(f, "Residue Abundance", "Plot3.png)	      
+writeHTMLImage(f, "Elemental Abundance", "Plot1.png")
+writeHTMLImage(f, "Temperature Factors", "Plot2.png")
+writeHTMLImage(f, "Residue Abundance", "Plot3.png")	      
 closeHTML(f)
+f.close()
 		       
 		       
 		       
