@@ -323,7 +323,7 @@ def mutantresidueabundance(mutant):
 	return mnumala, mnumarg, mnumasn, mnumasp, mnumasx, mnumcys, mnumglu, mnumgln, mnumglx, mnumgly, mnumhis, mnumile, mnumleu, mnumlys, mnummet, mnumphe, mnumpro, mnumser, mnumthr, mnumtrp, mnumtyr, mnumval
 		       
 #Module 10: Plotting the residue abundance
-def elementalabundanceplot():
+def residueabundanceplot():
 	N = 20
 	r1 = (wnumala, mnumala)
 	r2 = (wnumarg, mnumarg)
@@ -398,6 +398,21 @@ def closeHTML(f):
 	f.write("</html>\n")
 	f.close()
 
+
+		       
+#Executing the Code, mutant can be mutants 1, 2, or 3
+wildtype=readpdb("'p53 Wildtype.pdb'")
+mutant=readpdb("'p53 Mutant1.pdb'")
+rmsd(wildtype, mutant)
+wildtypeelementalabundance(wildtype)
+mutantelementalabundance(mutant)
+elementalabundanceplot()
+wildtypetempfactor(wildtype)
+mutanttempfactor(mutant)
+tfgraph()
+wildtyperesidueabundance(wildtype)
+mutantresidueabundance(mutant)
+residueabundanceplot()		       
 f=open("output.html",'w')		       
 openHTML(f, "Summary of p53 Protein Wildtype/Mutant Differences")
 f.write("<h1>The average temperature factor of the wildtype p53 is "%s"</h1>" % (wtempmean))
